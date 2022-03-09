@@ -1,10 +1,10 @@
 const { Schema, model } = require('mongoose');
+const mongoose = require("mongoose");
 
-
-const userSchema = new Schema(
+const projectSchema = new Schema(
   {
     name: {
-      type: String,      
+      type: String,
       required: true,
     },
     sprints: {
@@ -17,11 +17,8 @@ const userSchema = new Schema(
       type: Number,
       required: true,
     },
-    users: {
-      type: Array,      
-      required: true,
-    }
-},
+    users: [{ type: Schema.Types.ObjectId, ref: "User", required: true }]    
+  },
   {
     timestamps: true,
   }

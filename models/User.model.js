@@ -7,6 +7,7 @@ const userSchema = new Schema(
       unique: true,
       trim: true,
       required: true,
+      lowercase: true,
     },
     email: {
       type: String,
@@ -23,16 +24,15 @@ const userSchema = new Schema(
     imageUrl: {
       type: String,
       default: "../images/user.png",
-    }, 
+    },
     role: {
       type: String,
       enum: ["Developer", "Project Owner", "Scrum Master"],
       required: true,
     },
-    teams: {
-      type: Array,
-      required: true,
-    },
+    // teams: {
+    //   type: Array,
+    // },
   },
   {
     timestamps: true,

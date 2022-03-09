@@ -23,7 +23,7 @@ router.get("/verify", isAuthenticated, (req, res, next) => {
 });
 
 router.post("/signup", isLoggedOut, (req, res) => {
-  const { username, password } = req.body;
+  const { username, password, email, role } = req.body;
 
   if (!username) {
     return res
@@ -65,6 +65,8 @@ router.post("/signup", isLoggedOut, (req, res) => {
         return User.create({
           username,
           password: hashedPassword,
+          role,
+          email
         });
       })
       .then((user) => {
@@ -136,7 +138,7 @@ router.get("/logout", isLoggedIn, (req, res) => {
     if (err) {
       return res.status(500).json({ errorMessage: err.message });
     }
-    res.json({ message: "Done" });
+    res.json({ message: "You have logged out successfully!" });
   });
 });
 
