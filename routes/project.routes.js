@@ -9,6 +9,7 @@ router.post("/projects", (req, res, next) => {
   const { name, sprintDuration, users } = req.body;
 
   Project.create({ name, sprintDuration, users })
+    //.populate("sprints", "backlog")
     .then((response) => res.json(response))
     .catch((err) => next(err));
 });
@@ -57,7 +58,7 @@ router.delete("/projects/:projectId", (req, res, next) => {
   Project.findByIdAndRemove(projectId)
     .then(() =>
       res.json({
-        message: `Project with ${projectId} was removed successfully`,
+        message: `Project with ${projectId}ID was removed successfully`,
       })
     )
     .catch((err) => res.json(err));

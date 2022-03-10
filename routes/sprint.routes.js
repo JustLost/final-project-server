@@ -58,7 +58,7 @@ router.put("/sprints/:sprintId", (req, res, next) => {
     return;
   }
 
-  Task.findByIdAndUpdate(sprintId, req.body, { new: true })
+  Sprint.findByIdAndUpdate(sprintId, req.body, { new: true })
     .then((response) => res.json(response))
     .catch((err) => res.json(err));
 });
