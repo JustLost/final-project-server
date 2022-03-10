@@ -7,22 +7,31 @@ const Task = require("../models/Task.model");
 
 
 router.post("/sprints", (req, res, next) => {
-  const { title, description, projectId } = req.body;
+  const {
+    name,
+    startingDate,
+    duration,
+    standUps,
+    review,
+    tasksId,
+    retrospective,
+  } = req.body;
 
-  Task.create({ title, description, project: projectId })
-    .then((newTask) => {
+  Sprint.create({  name, startingDate, duration, standUps, review, tasks: tasksId, retrospective  })
+    .then((newSprint) => {
+      createSprint = newSprint;
       return Project.findByIdAndUpdate(
-        projectId,
-        { $push: { sprints: newTask._id } },
-        { new: true }
+        tasksId,
+        { $push: { sprints: newSprint._id } },
       );
     })
-    .then((response) => res.json(response))
+    .then((response) => res.json(createSprint))
     .catch((err) => next(err));
 });
 
 router.get("/sprints", (req, res, next) => {
-  Task.find()
+  Sprint.find()
+    .populate("tasks")
     .then((response) => res.json(response))
     .catch((err) => res.json(err));
 });
@@ -35,7 +44,8 @@ router.get("/sprints/:sprintId", (req, res, next) => {
     return;
   }
 
-  Task.findById(sprintId)
+  Sprint.findById(sprintId)
+    .populate("tasks")
     .then((response) => res.json(response))
     .catch((err) => res.json(err));
 });

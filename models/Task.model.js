@@ -11,7 +11,7 @@ const taskSchema = new Schema(
       type: String,
       enum: ["To do", "Doing", "Merge Request", "Done", "Blocked"],
       required: true,
-      default: "to do",
+      default: "To do",
     },
     description: {
       type: String,

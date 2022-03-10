@@ -15,8 +15,7 @@ router.post("/projects", (req, res, next) => {
 
 router.get("/projects", (req, res, next) => {
   Project.find()
-    .populate("tasks")
-    .populate("sprints")
+    .populate("backlog sprints")
     .then((response) => res.json(response))
     .catch((err) => res.json(err));
 });
@@ -30,8 +29,7 @@ router.get("/projects/:projectId", (req, res, next) => {
   }
 
   Project.findById(projectId)
-    .populate("tasks")
-    .populate("sprints")
+    .populate("backlog sprints")
     .then((response) => res.json(response))
     .catch((err) => res.json(err));
 });

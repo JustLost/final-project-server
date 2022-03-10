@@ -10,14 +10,14 @@ const projectSchema = new Schema(
     sprints: {
       type: Array,
     },
-    Backlog: {
-      type: Array,
+    backlog: {
+      type: [{ type: Schema.Types.ObjectId, ref: "Task"}],
     },
     sprintDuration: {
       type: Number,
       required: true,
     },
-    users: [{ type: Schema.Types.ObjectId, ref: "User", required: true }]    
+    users: [{ type: Schema.Types.ObjectId, ref: "User", required: true }],
   },
   {
     timestamps: true,

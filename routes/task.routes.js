@@ -5,18 +5,22 @@ const Project = require("../models/Project.model");
 const Task = require("../models/Task.model");
 
 router.post("/tasks", (req, res, next) => {
-  const { title, description, projectId } = req.body;
+  const { title, description, projectId, creator } = req.body;
 
-  Task.create({ title, description, project: projectId })
+  let createTask;
+
+  Task.create({ title, description, project: projectId, creator })
     .then((newTask) => {
+      createTask = newTask;
+      console.log(newTask);
       return Project.findByIdAndUpdate(
         projectId,
-        { $push: { tasks: newTask._id } },
-        { new: true }
+        { $push: { backlog: newTask._id } },
       );
     })
-    .then((response) => res.json(response))
+    .then((response) => res.json(createTask))
     .catch((err) => next(err));
+    
 });
 
 router.get("/tasks", (req, res, next) => {
