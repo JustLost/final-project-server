@@ -5,8 +5,9 @@ const Sprint = require("../models/Sprint.model")
 const Project = require("../models/Project.model");
 const Task = require("../models/Task.model");
 
+const { isAuthenticated } = require("./middleware/jwt.middleware");
 
-router.post("/sprints", (req, res, next) => {
+router.post("/sprints", isAuthenticated, (req, res, next) => {
   const {
     name,
     startingDate,
@@ -29,14 +30,14 @@ router.post("/sprints", (req, res, next) => {
     .catch((err) => next(err));
 });
 
-router.get("/sprints", (req, res, next) => {
+router.get("/sprints", isAuthenticated, (req, res, next) => {
   Sprint.find()
     .populate("tasks")
     .then((response) => res.json(response))
     .catch((err) => res.json(err));
 });
 
-router.get("/sprints/:sprintId", (req, res, next) => {
+router.get("/sprints/:sprintId", isAuthenticated, (req, res, next) => {
   const { sprintId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(sprintId)) {
@@ -50,7 +51,7 @@ router.get("/sprints/:sprintId", (req, res, next) => {
     .catch((err) => res.json(err));
 });
 
-router.put("/sprints/:sprintId", (req, res, next) => {
+router.put("/sprints/:sprintId", isAuthenticated, (req, res, next) => {
   const { sprintId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(sprintId)) {

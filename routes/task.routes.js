@@ -4,7 +4,9 @@ const mongoose = require("mongoose");
 const Project = require("../models/Project.model");
 const Task = require("../models/Task.model");
 
-router.post("/tasks", (req, res, next) => {
+const { isAuthenticated } = require("./middleware/jwt.middleware");
+
+router.post("/tasks", isAuthenticated, (req, res, next) => {
   const { title, description, projectId, creator } = req.body;
 
   let createTask;
@@ -23,13 +25,13 @@ router.post("/tasks", (req, res, next) => {
     
 });
 
-router.get("/tasks", (req, res, next) => {
+router.get("/tasks", isAuthenticated, (req, res, next) => {
   Task.find()
     .then((response) => res.json(response))
     .catch((err) => res.json(err));
 });
 
-router.get("/tasks/:taskId", (req, res, next) => {
+router.get("/tasks/:taskId", isAuthenticated, (req, res, next) => {
   const { taskId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(taskId)) {
@@ -42,7 +44,7 @@ router.get("/tasks/:taskId", (req, res, next) => {
     .catch((err) => res.json(err));
 });
 
-router.put("/tasks/:taskId", (req, res, next) => {
+router.put("/tasks/:taskId", isAuthenticated, (req, res, next) => {
   const { taskId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(taskId)) {
