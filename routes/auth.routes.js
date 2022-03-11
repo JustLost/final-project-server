@@ -12,8 +12,8 @@ const saltRounds = 10;
 const User = require("../models/User.model");
 
 // Require necessary (isLoggedOut and isLiggedIn) middleware in order to control access to specific routes
-const isLoggedOut = require("../middleware/isLoggedOut");
-const isLoggedIn = require("../middleware/isLoggedIn");
+//const isLoggedOut = require("../middleware/isLoggedOut");
+//const isLoggedIn = require("../middleware/isLoggedIn");
 const { isAuthenticated } = require("../middleware/jwt.middleware");
 
 router.get("/verify", isAuthenticated, (req, res, next) => {

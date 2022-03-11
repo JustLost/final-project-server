@@ -5,7 +5,7 @@ const Project = require("../models/Project.model");
 const Task = require("../models/Task.model");
 const Sprints = require("../models/Project.model")
 
-const { isAuthenticated } = require("./middleware/jwt.middleware");
+const { isAuthenticated } = require("../middleware/jwt.middleware");
 
 router.post("/projects", isAuthenticated, (req, res, next) => {
   const { name, sprintDuration, users } = req.body;
