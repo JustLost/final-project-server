@@ -8,9 +8,9 @@ const Sprints = require("../models/Project.model")
 const { isAuthenticated } = require("../middleware/jwt.middleware");
 
 router.post("/projects", isAuthenticated, (req, res, next) => {
-  const { name, sprintDuration, users } = req.body;
+  const { name, sprintDuration, users, description } = req.body;
 
-  Project.create({ name, sprintDuration, users })
+  Project.create({ name, sprintDuration, users, description })
     //.populate("sprints", "backlog")
     .then((response) => res.json(response))
     .catch((err) => next(err));

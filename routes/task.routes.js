@@ -7,11 +7,11 @@ const Task = require("../models/Task.model");
 const { isAuthenticated } = require("../middleware/jwt.middleware");
 
 router.post("/tasks", isAuthenticated, (req, res, next) => {
-  const { title, description, projectId, creator } = req.body;
+  const { title, description, projectId, creator, tag, storyPoints } = req.body;
 
   let createTask;
 
-  Task.create({ title, description, project: projectId, creator })
+  Task.create({ title, description, project: projectId, creator, tag, storyPoints })
     .then((newTask) => {
       createTask = newTask;
       console.log(newTask);

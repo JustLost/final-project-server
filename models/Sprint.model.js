@@ -14,11 +14,12 @@ const sprintSchema = new Schema(
       required: true,
     },
     startingDate: {
-      type: Number,
+      type: Date,
       required: true,
     },
     duration: {
-      type: Number,
+      type: String,
+      enun: [],
       required: true,
     },
     standUps: {
