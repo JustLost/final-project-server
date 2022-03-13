@@ -1,10 +1,10 @@
 const router = require("express").Router();
 const { google } = require("googleapis");
+const { isAuthenticated } = require("../middleware/jwt.middleware");
 
 const GOOGLE_CLIENT_ID =process.env.GOOGLE_CLIENT_ID;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 const REFRESH_TOKEN = process.env.REFRESH_TOKEN;
-
 
 const oAuth2Client = new google.auth.OAuth2(
     GOOGLE_CLIENT_ID,
@@ -23,7 +23,7 @@ router.post("/create-tokens", async (req, res, next) => {
   }
 });
 
-router.post("/create-event", async (req, res, next) => {
+router.post("/create-event", isAuthenticated, async (req, res, next) => {
     try {
         const {summary, description, location, startDateTime, endDateTime} = req.body
 
@@ -33,6 +33,7 @@ router.post("/create-event", async (req, res, next) => {
         const response = await calendar.events.insert({
             auth: oAuth2Client,
             calendarId: "primary",
+            sendUpdates: "all",
             requestBody: {
                 summary: summary,
                 description: description,
@@ -43,7 +44,8 @@ router.post("/create-event", async (req, res, next) => {
                 },
                 end: {
                     dateTime: new Date(endDateTime),
-                }
+                },
+                attendees: [{email: "@gmail.com"}]
             }
         })
         res.send(response)

@@ -140,7 +140,7 @@ router.post("/login", (req, res, next) => {
     });
 });
 
-router.get("/logout", (req, res) => {
+router.get("/logout", isAuthenticated, (req, res) => {
   req.session.destroy((err) => {
     if (err) {
       return res.status(500).json({ errorMessage: err.message });
