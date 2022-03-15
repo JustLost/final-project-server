@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const Project = require("../models/Project.model");
 const Task = require("../models/Task.model");
 const Sprints = require("../models/Project.model")
+const User = require("../models/User.model")
 
 const { isAuthenticated } = require("../middleware/jwt.middleware");
 
@@ -37,15 +38,17 @@ router.get("/projects/:projectId", isAuthenticated, (req, res, next) => {
     .catch((err) => res.json(err));
 });
 
-router.put("/projects/:projectId", isAuthenticated, (req, res, next) => {
+router.put("/projects/:projectId", isAuthenticated, async(req, res, next) => {
   const { projectId } = req.params;
-
+  const { name, description, sprints, sprintDuration, timestamps, users } = req.body;
+  
   if (!mongoose.Types.ObjectId.isValid(projectId)) {
     res.status(400).json({ message: "Specified Id is not valid" });
     return;
   }
-
-  Project.findByIdAndUpdate(projectId, req.body, { new: true })
+  let user = await User.findOne({ email: users });
+  //console.log("users are:", user)
+  Project.findByIdAndUpdate(projectId,  {name: name, description: description, sprints: sprints, sprintDuration: sprintDuration, timestamps: timestamps, users:[user._id]}, { new: true })
     .then((response) => res.json(response))
     .catch((err) => res.json(err));
 });

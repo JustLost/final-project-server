@@ -16,13 +16,14 @@ router.post("/sprints", isAuthenticated, (req, res, next) => {
     review,
     tasksId,
     retrospective,
+    projectId
   } = req.body;
 
   Sprint.create({  name, startingDate, duration, standUps, review, tasks: tasksId, retrospective  })
     .then((newSprint) => {
       createSprint = newSprint;
       return Project.findByIdAndUpdate(
-        tasksId,
+        projectId,
         { $push: { sprints: newSprint._id } },
       );
     })

@@ -45,7 +45,7 @@ router.post("/create-event", isAuthenticated, async (req, res, next) => {
                 end: {
                     dateTime: new Date(endDateTime),
                 },
-                attendees: [{email: "@gmail.com"}]
+                attendees: [{email: "a.rita.cunha.ts@gmail.com"}]
             }
         })
         res.send(response)

@@ -12,7 +12,7 @@ const projectSchema = new Schema(
       required: true,
     },
     sprints: {
-      type: Array,
+      type: { type: Schema.Types.ObjectId, ref: "Sprint" },
     },
     backlog: {
       type: [{ type: Schema.Types.ObjectId, ref: "Task" }],
