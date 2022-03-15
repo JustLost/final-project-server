@@ -36,6 +36,8 @@ router.get("/projects/:projectId", isAuthenticated, (req, res, next) => {
     .populate("backlog sprints")
     .then((response) => res.json(response))
     .catch((err) => res.json(err));
+
+// TODO: ir buscar o id do assignedTo 
 });
 
 router.put("/projects/:projectId", isAuthenticated, async(req, res, next) => {

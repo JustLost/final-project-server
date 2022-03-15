@@ -3,20 +3,24 @@ const mongoose = require("mongoose");
 
 const Project = require("../models/Project.model");
 const Task = require("../models/Task.model");
+const User = require("../models/User.model")
 
 const { isAuthenticated } = require("../middleware/jwt.middleware");
 
-router.post("/tasks", isAuthenticated, (req, res, next) => {
-  const { title, description, projectId, creator, tag, storyPoints } = req.body;
+router.post("/backlog/:projectId", isAuthenticated, (req, res, next) => {
+  const { title, description, creator, tag, storyPoints, assignedTo } = req.body;
+  const { projectId } = req.params;
 
   let createTask;
 
-  Task.create({ title, description, project: projectId, creator, tag, storyPoints })
+  let assignee = User.findOne({ email: assignedTo })
+
+  Task.create({ title, description, assignedTo: assignee._id , creator, tag, storyPoints })
     .then((newTask) => {
       createTask = newTask;
       console.log(newTask);
       return Project.findByIdAndUpdate(
-        projectId,
+        { _id: projectId },
         { $push: { backlog: newTask._id } },
       );
     })
@@ -25,13 +29,16 @@ router.post("/tasks", isAuthenticated, (req, res, next) => {
     
 });
 
-router.get("/tasks", isAuthenticated, (req, res, next) => {
-  Task.find()
-    .then((response) => res.json(response))
+router.get("/backlog/:projectId", isAuthenticated, (req, res, next) => {
+  const { projectId } = req.params;
+
+  Project.findById(projectId)
+    .populate("backlog")
+    .then((response) => res.json(response.backlog))
     .catch((err) => res.json(err));
 });
 
-router.get("/tasks/:taskId", isAuthenticated, (req, res, next) => {
+router.get("/backlog/:taskId", isAuthenticated, (req, res, next) => {
   const { taskId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(taskId)) {
@@ -44,7 +51,7 @@ router.get("/tasks/:taskId", isAuthenticated, (req, res, next) => {
     .catch((err) => res.json(err));
 });
 
-router.put("/tasks/:taskId", isAuthenticated, (req, res, next) => {
+router.put("/backlog/:taskId", isAuthenticated, (req, res, next) => {
   const { taskId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(taskId)) {
