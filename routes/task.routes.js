@@ -3,11 +3,12 @@ const mongoose = require("mongoose");
 
 const Project = require("../models/Project.model");
 const Task = require("../models/Task.model");
-const User = require("../models/User.model")
+const User = require("../models/User.model");
+const Sprint = require("../models/Sprint.model")
 
 const { isAuthenticated } = require("../middleware/jwt.middleware");
 
-router.post("/backlog/:projectId", isAuthenticated, (req, res, next) => {
+router.post("/backlog/:projectId", (req, res, next) => {
   const { title, description, creator, tag, storyPoints, assignedTo } = req.body;
   const { projectId } = req.params;
 
@@ -29,7 +30,7 @@ router.post("/backlog/:projectId", isAuthenticated, (req, res, next) => {
     
 });
 
-router.get("/backlog/:projectId", isAuthenticated, (req, res, next) => {
+router.get("/backlog/:projectId", (req, res, next) => {
   const { projectId } = req.params;
 
   Project.findById(projectId)
@@ -38,7 +39,7 @@ router.get("/backlog/:projectId", isAuthenticated, (req, res, next) => {
     .catch((err) => res.json(err));
 });
 
-router.get("/backlog/:taskId", isAuthenticated, (req, res, next) => {
+router.get("/backlog/:taskId", (req, res, next) => {
   const { taskId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(taskId)) {
@@ -51,7 +52,7 @@ router.get("/backlog/:taskId", isAuthenticated, (req, res, next) => {
     .catch((err) => res.json(err));
 });
 
-router.put("/backlog/:taskId", isAuthenticated, (req, res, next) => {
+router.put("/backlog/:taskId", (req, res, next) => {
   const { taskId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(taskId)) {
@@ -62,6 +63,18 @@ router.put("/backlog/:taskId", isAuthenticated, (req, res, next) => {
   Task.findByIdAndUpdate(taskId, req.body, { new: true })
     .then((response) => res.json(response))
     .catch((err) => res.json(err));
+});
+
+router.put("/sprint/add/:taskId",(req, res, next) => {
+  const { taskId } = req.params;
+  const { sprintId, projectId } = req.body;
+
+  Project.findByIdAndUpdate(projectId,{ $pull: { backlog: taskId } })
+  .then((response) => { 
+    return Sprint.findByIdAndUpdate(sprintId, { $push: { tasks: taskId } })
+  })
+  .then((response) => res.json(response))
+  .catch((err) => next(err));
 });
 
 module.exports = router;
