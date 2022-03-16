@@ -22,6 +22,14 @@ router.get("/verify", isAuthenticated, (req, res, next) => {
   res.status(200).json(req.payload);
 });
 
+router.get('/user', isAuthenticated, (req, res, next) => {
+  const {_id} = req.payload
+  User.findById(_id)
+    .populate('posts', 'postsCompleted') 
+    .then((response) => res.json(response))
+    .catch((err) => next(err));
+});
+
 router.post("/signup", (req, res) => {
   const { username, password, email, role } = req.body;
 
