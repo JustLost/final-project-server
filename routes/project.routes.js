@@ -45,15 +45,15 @@ router.get("/projects/:projectId", isAuthenticated, (req, res, next) => {
 
 router.put("/projects/:projectId", isAuthenticated, async(req, res, next) => {
   const { projectId } = req.params;
-  const { name, description, sprints, sprintDuration, timestamps, users } = req.body;
+  const { name, description, sprints, sprintDuration, timestamps, email } = req.body;
   
   if (!mongoose.Types.ObjectId.isValid(projectId)) {
     res.status(400).json({ message: "Specified Id is not valid" });
     return;
   }
-  let user = await User.findOne({ email: users });
+  let user = await User.findOne({ email: email });
   //console.log("users are:", user)
-  Project.findByIdAndUpdate(projectId,  {name: name, description: description, sprints: sprints, sprintDuration: sprintDuration, timestamps: timestamps, users:[user._id]}, { new: true })
+  Project.findByIdAndUpdate(projectId,  {name: name, description: description, sprints: sprints, sprintDuration: sprintDuration, timestamps: timestamps, $push:{users: email}}, { new: true })
     .then((response) => res.json(response))
     .catch((err) => res.json(err));
 });
