@@ -24,9 +24,11 @@ router.get("/verify", isAuthenticated, (req, res, next) => {
 
 router.get('/user', isAuthenticated, (req, res, next) => {
   const {_id} = req.payload
+  //console.log("iddddddddd:", _id)
   User.findById(_id)
-    .populate('posts', 'postsCompleted') 
-    .then((response) => res.json(response))
+    .then((response) => {res.json(response)
+      //console.log("responseeeee:", response)
+    })
     .catch((err) => next(err));
 });
 

@@ -48,7 +48,9 @@ router.get("/sprints/:sprintId", isAuthenticated, (req, res, next) => {
 
   Sprint.findById(sprintId)
     .populate("tasks")
-    .then((response) => res.json(response))
+    .then((response) => {res.json(response)
+    // console.log("responseeeee:", response)
+  })
     .catch((err) => res.json(err));
 });
 

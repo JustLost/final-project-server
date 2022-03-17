@@ -33,8 +33,10 @@ router.get("/projects/:projectId", isAuthenticated, (req, res, next) => {
   }
 
   Project.findById(projectId)
-    .populate("backlog sprints")
-    .then((response) => res.json(response))
+    .populate("backlog sprints users")
+    .then((response) => {
+      res.json(response)
+    console.log("responseeeeeeeeee:", response)})
     .catch((err) => res.json(err));
 
 // TODO: ir buscar o id do assignedTo 
