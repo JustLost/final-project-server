@@ -20,7 +20,7 @@ const taskSchema = new Schema(
     creator: { type: Schema.Types.ObjectId, ref: "User", required: true },
     tag: {type: String, enum: ["none", "User Story", "Spike", "Bug Fix"], default: "none"},
     assignedTo: [{ type: Schema.Types.ObjectId, ref: "User"}],
-    storyPoints: { type: Number }
+    storyPoints: { type: Number, enum: [ 1, 2, 3, 5, 8] }
   },
   {
     timestamps: true,

@@ -30,6 +30,7 @@ const userSchema = new Schema(
       enum: ["Developer", "Project Owner", "Scrum Master"],
       required: true,
     },
+    refreshToken:{type: String},
     // teams: {
     //   type: Array,
     // },

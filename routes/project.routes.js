@@ -36,7 +36,8 @@ router.get("/projects/:projectId", isAuthenticated, (req, res, next) => {
     .populate("backlog sprints users")
     .then((response) => {
       res.json(response)
-    console.log("responseeeeeeeeee:", response)})
+    // console.log("responseeeeeeeeee:", response)
+  })
     .catch((err) => res.json(err));
 
 // TODO: ir buscar o id do assignedTo 
@@ -72,5 +73,11 @@ router.delete("/projects/:projectId", isAuthenticated, (req, res, next) => {
     )
     .catch((err) => res.json(err));
 });
+
+router.get("/users", isAuthenticated, (req, res, next) => {
+  User.find()
+  .then((response) => res.json(response))
+  .catch((err) => res.json(err));
+})
 
 module.exports = router;

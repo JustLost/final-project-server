@@ -4,7 +4,8 @@ const { isAuthenticated } = require("../middleware/jwt.middleware");
 
 const GOOGLE_CLIENT_ID =process.env.GOOGLE_CLIENT_ID;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
-const REFRESH_TOKEN = process.env.REFRESH_TOKEN;
+//const REFRESH_TOKEN = process.env.REFRESH_TOKEN;
+const User = require("../models/User.model");
 
 const oAuth2Client = new google.auth.OAuth2(
     GOOGLE_CLIENT_ID,
@@ -13,10 +14,14 @@ const oAuth2Client = new google.auth.OAuth2(
 )
 
 
-router.post("/create-tokens", async (req, res, next) => {
+router.post("/create-tokens", isAuthenticated, async (req, res, next) => {
   try {
+    const {_id} = req.payload;
     const { code } = req.body;
-    const response = await oAuth2Client.getToken(code)    
+    const response = await oAuth2Client.getToken(code)
+    console.log("tokensss", response.tokens)
+    const updatedUser = await User.findByIdAndUpdate(_id, {refreshToken: response.tokens.refresh_token}, {new: true})
+    console.log("useeeeer:", updatedUser)    
     res.send(response)
   } catch (error) {
     next(error);
@@ -25,9 +30,11 @@ router.post("/create-tokens", async (req, res, next) => {
 
 router.post("/create-event", isAuthenticated, async (req, res, next) => {
     try {
-        const {summary, description, location, startDateTime, endDateTime} = req.body
 
-        oAuth2Client.setCredentials({refresh_token: REFRESH_TOKEN})
+        const {summary, description, location, startDateTime, endDateTime} = req.body
+        const {_id} = req.payload;
+        const user = await User.findById(_id)
+        oAuth2Client.setCredentials({refresh_token: user.refreshToken})
 
         const calendar = google.calendar("v3")
         const response = await calendar.events.insert({
