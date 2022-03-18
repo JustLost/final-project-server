@@ -10,7 +10,8 @@ const User = require("../models/User.model");
 const oAuth2Client = new google.auth.OAuth2(
     GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET,
-    "http://localhost:3000"
+    // "http://localhost:3000"
+    "https://agilize-we-app.netlify.app"
 )
 
 
