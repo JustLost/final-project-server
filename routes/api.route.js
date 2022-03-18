@@ -6,6 +6,7 @@ const GOOGLE_CLIENT_ID =process.env.GOOGLE_CLIENT_ID;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 //const REFRESH_TOKEN = process.env.REFRESH_TOKEN;
 const User = require("../models/User.model");
+const Project = require("../models/Project.model");
 
 const oAuth2Client = new google.auth.OAuth2(
     GOOGLE_CLIENT_ID,
@@ -31,16 +32,26 @@ router.post("/create-tokens", isAuthenticated, async (req, res, next) => {
 router.post("/create-event", isAuthenticated, async (req, res, next) => {
     try {
 
-        const {summary, description, location, startDateTime, endDateTime} = req.body
+        const {summary, description, location, startDateTime, endDateTime, recurring, projectId} = req.body
         const {_id} = req.payload;
         const user = await User.findById(_id)
         oAuth2Client.setCredentials({refresh_token: user.refreshToken})
+
+        let project = await Project.findById(projectId)
+        .populate("backlog sprints users")
+        .catch((err) => res.json(err));
+
+        console.log("finding project", project)
+        let userEmails = project.users.reduce((a, user) => ([ ...a, {email: user.email}]), [])
+        
+        console.log(`finding useremails`, userEmails)
 
         const calendar = google.calendar("v3")
         const response = await calendar.events.insert({
             auth: oAuth2Client,
             calendarId: "primary",
             sendUpdates: "all",
+            recurrence : recurring ? `RRULE:FREQ=DAILY;COUNT=${recurring*7}` : "",
             requestBody: {
                 summary: summary,
                 description: description,
@@ -52,7 +63,7 @@ router.post("/create-event", isAuthenticated, async (req, res, next) => {
                 end: {
                     dateTime: new Date(endDateTime),
                 },
-                attendees: [{email: "a.rita.cunha.ts@gmail.com"}]
+                attendees: userEmails
             }
         })
         res.send(response)

@@ -53,7 +53,7 @@ router.put("/projects/:projectId", isAuthenticated, async(req, res, next) => {
   }
   let user = await User.findOne({ email: email });
   //console.log("users are:", user)
-  Project.findByIdAndUpdate(projectId,  {name: name, description: description, sprints: sprints, sprintDuration: sprintDuration, timestamps: timestamps, $push:{users: email}}, { new: true })
+  Project.findByIdAndUpdate(projectId,  {name: name, description: description, sprints: sprints, sprintDuration: sprintDuration, timestamps: timestamps, $push:{users: user._id}}, { new: true })
     .then((response) => res.json(response))
     .catch((err) => res.json(err));
 });
