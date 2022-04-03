@@ -36,7 +36,7 @@ router.get("/projects/:projectId", isAuthenticated, (req, res, next) => {
     .populate("backlog sprints users")
     .then((response) => {
       res.json(response)
-    // console.log("responseeeeeeeeee:", response)
+    // console.log("responseeeeee:", response)
   })
     .catch((err) => res.json(err));
 

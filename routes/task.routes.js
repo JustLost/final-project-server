@@ -6,8 +6,6 @@ const Task = require("../models/Task.model");
 const User = require("../models/User.model");
 const Sprint = require("../models/Sprint.model")
 
-const { isAuthenticated } = require("../middleware/jwt.middleware");
-
 router.post("/backlog/:projectId", (req, res, next) => {
   const { title, description, creator, tag, storyPoints, assignedTo } = req.body;
   const { projectId } = req.params;
@@ -39,7 +37,7 @@ router.get("/backlog/:projectId", (req, res, next) => {
     .catch((err) => res.json(err));
 });
 
-router.get("/backlog/:taskId", (req, res, next) => {
+router.get("/backlog/task/:taskId", (req, res, next) => {
   const { taskId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(taskId)) {
