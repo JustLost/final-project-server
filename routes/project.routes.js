@@ -54,6 +54,22 @@ router.put("/projects/:projectId", isAuthenticated, async(req, res, next) => {
   let user = await User.findOne({ email: email });
   //console.log("users are:", user)
   Project.findByIdAndUpdate(projectId,  {name: name, description: description, sprints: sprints, sprintDuration: sprintDuration, timestamps: timestamps, $push:{users: user._id}}, { new: true })
+    .populate("users")
+    .then((response) => res.json(response))
+    .catch((err) => res.json(err));
+});
+
+router.put("/projects/remove-user/:projectId", isAuthenticated, async(req, res, next) => {
+  const { projectId } = req.params;
+  const { email } = req.body;
+  
+  if (!mongoose.Types.ObjectId.isValid(projectId)) {
+    res.status(400).json({ message: "Specified Id is not valid" });
+    return;
+  }
+  let user = await User.findOne({ email: email });
+  Project.findByIdAndUpdate(projectId,  { $pull:{users: user._id}}, { new: true })
+    .populate("users")
     .then((response) => res.json(response))
     .catch((err) => res.json(err));
 });
