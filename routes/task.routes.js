@@ -50,9 +50,8 @@ router.get("/backlog/task/:taskId", (req, res, next) => {
     .catch((err) => res.json(err));
 });
 
-router.put("/backlog/:taskId", (req, res, next) => {
+router.put("/task/:taskId", (req, res, next) => {
   const { taskId } = req.params;
-
   if (!mongoose.Types.ObjectId.isValid(taskId)) {
     res.status(400).json({ message: "Specified Id is not valid" });
     return;
